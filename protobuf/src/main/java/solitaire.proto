@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+option java_package = "serialization.compare.protobuf";
+option java_outer_classname = "SolitaireProtos";
+
+enum Suit {
+	SPADES = 0;
+	DIAMONDS = 1;
+	HEARTS = 2;
+	CLUBS = 3;
+}
+enum Rank {
+	ACE = 0;
+	TWO = 1;
+	THREE = 2;
+	FOUR = 3;
+	FIVE = 4;
+	SIX = 5;
+	SEVEN = 6;
+	EIGHT = 7;
+	NINE = 8;
+	TEN = 9;
+	JACK = 10;
+	QUEEN = 11;
+	KING = 12;
+}
+enum State {
+	UP = 0;
+	DOWN = 1;
+}
+
+message Card {
+  Suit suit = 1;
+  Rank rank = 2;
+}
+
+message CardState {
+  Card card = 1;
+  State state = 2;
+}
+
+message Pile {
+  repeated CardState cards = 1;
+}
+
+message Solitarie {
+	repeated Pile tableauPiles = 1;
+	map<int32, Pile> foundationPiles = 2; 
+	Pile handPile = 3;
+	Pile wastePile = 4;
+}

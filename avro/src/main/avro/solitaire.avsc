@@ -1,0 +1,66 @@
+{
+  "type" : "record",
+  "name" : "Solitaire",
+  "namespace" : "serialization.compare.avro",
+  "fields" : [ {
+    "name" : "tableauPiles",
+    "type" : {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Pile",
+        "fields" : [ {
+          "name" : "cards",
+          "type" : {
+            "type" : "array",
+            "items" : {
+              "type" : "record",
+              "name" : "CardState",
+              "fields" : [ {
+                "name" : "card",
+                "type" : {
+                  "type" : "record",
+                  "name" : "Card",
+                  "fields" : [ {
+                    "name" : "suit",
+                    "type" : {
+                      "type" : "enum",
+                      "name" : "Suit",
+                      "symbols" : [ "SPADES", "DIAMONDS", "HEARTS", "CLUBS" ]
+                    }
+                  }, {
+                    "name" : "rank",
+                    "type" : {
+                      "type" : "enum",
+                      "name" : "Rank",
+                      "symbols" : [ "ACE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "JACK", "QUEEN", "KING" ]
+                    }
+                  } ]
+                }
+              }, {
+                "name" : "state",
+                "type" : {
+                  "type" : "enum",
+                  "name" : "State",
+                  "symbols" : [ "UP", "DOWN" ]
+                }
+              } ]
+            }
+          }
+        } ]
+      }
+    }
+  }, {
+    "name" : "foundationPiles",
+    "type" : {
+      "type" : "map",
+      "values" : "Pile"
+    }
+  }, {
+    "name" : "handPile",
+    "type" : "Pile"
+  }, {
+    "name" : "wastePile",
+    "type" : "Pile"
+  } ]
+}
