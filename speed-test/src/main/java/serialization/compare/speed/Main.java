@@ -1,6 +1,7 @@
 package serialization.compare.speed;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +22,8 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import serialization.compare.bson.jackson.BsonAdapter;
 import serialization.compare.json.gson.GsonAdapter;
@@ -136,6 +139,85 @@ public class Main {
 		for (serialization.compare.protobuf.SolitaireProtos.Solitarie game : PROTOBUF_DATA_FOR_TESTING) {
 			byte[] ba = game.toByteArray();
 			bh.consume(ba);
+		}
+	}
+	
+	@Benchmark
+	public void gsonRoundTrip(Blackhole bh) {
+		for (serialization.compare.jackson.Solitaire game : TEXT_DATA_FOR_TESTING) {
+			byte[] ba = gsonAdapter.toByteArray(game);
+			game = gsonAdapter.fromByteArray(ba);
+			bh.consume(ba);
+			bh.consume(game);
+		}
+	}
+
+	@Benchmark
+	public void jsonRoundTrip(Blackhole bh) {
+		for (serialization.compare.jackson.Solitaire game : TEXT_DATA_FOR_TESTING) {
+			byte[] ba = jsonAdapter.toByteArray(game);
+			game = jsonAdapter.fromByteArray(ba);
+			bh.consume(ba);
+			bh.consume(game);
+		}
+	}
+
+	@Benchmark
+	public void xmlRoundtrip(Blackhole bh) {
+		for (serialization.compare.jackson.Solitaire game : TEXT_DATA_FOR_TESTING) {
+			byte[] ba = xmlAdapter.toByteArray(game);
+			game = xmlAdapter.fromByteArray(ba);
+			bh.consume(ba);
+			bh.consume(game);
+		}
+	}
+
+	@Benchmark
+	public void yamlRoundtrip(Blackhole bh) {
+		for (serialization.compare.jackson.Solitaire game : TEXT_DATA_FOR_TESTING) {
+			byte[] ba = yamlAdapter.toByteArray(game);
+			game = yamlAdapter.fromByteArray(ba);
+			bh.consume(ba);
+			bh.consume(game);
+		}
+	}
+	
+	@Benchmark
+	public void bsonRoundtrip(Blackhole bh) {
+		for (serialization.compare.bson.jackson.Solitaire game : BSON_DATA_FOR_TESTING) {
+			byte[] ba = bsonAdapter.toByteArray(game);
+			game = bsonAdapter.fromByteArray(ba);
+			bh.consume(ba);
+			bh.consume(game);
+		}
+	}
+	
+	@Benchmark
+	public void avroRoundtrip(Blackhole bh) {
+		for (serialization.compare.avro.Solitaire game : AVRO_DATA_FOR_TESTING) {
+			ByteBuffer ba;
+			try {
+				ba = game.toByteBuffer();
+				game = serialization.compare.avro.Solitaire.fromByteBuffer(ba);
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+			bh.consume(ba);
+			bh.consume(game);
+		}
+	}
+	
+	@Benchmark
+	public void protobufRoundtrip(Blackhole bh) {
+		for (serialization.compare.protobuf.SolitaireProtos.Solitarie game : PROTOBUF_DATA_FOR_TESTING) {
+			try {
+				byte[] ba = game.toByteArray();
+				game = serialization.compare.protobuf.SolitaireProtos.Solitarie.parseFrom(ba);
+				bh.consume(ba);
+				bh.consume(game);
+			} catch (InvalidProtocolBufferException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 	}
 
